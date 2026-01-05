@@ -1,117 +1,92 @@
+
 # 🔐 SecureAuth — TOTP Authentication Workflow  
 **React + Vite | Enterprise-Style MFA Simulation**
 
 🔗 **Live Demo:**  
-👉 https://secure-auth-theta.vercel.app  
+👉 [https://secure-auth-theta.vercel.app](https://secure-auth-theta.vercel.app)  
 
 📦 **GitHub Repository:**  
-👉 https://github.com/onlynayan/secure-auth
+👉 [https://github.com/onlynayan/secure-auth](https://github.com/onlynayan/secure-auth)
 
 ---
 
 ## 🚀 Project Overview
 
-**SecureAuth** is a front-end simulation of a real-world **enterprise authentication lifecycle**, demonstrating **admin-controlled user provisioning**, **mandatory first-time password reset**, and **QR-based TOTP multi-factor authentication (MFA)**.
+**SecureAuth** is a front-end simulation of a high-security **enterprise authentication lifecycle**. It demonstrates a rigid security protocol involving **admin-controlled provisioning**, **mandatory credential rotation**, and **device-bound TOTP multi-factor authentication**.
 
-Users cannot self-register. All identities are provisioned by an administrator, closely reflecting corporate and government-grade security systems.
-
----
-
-## 🌐 Live Demo
-
-Explore the full authentication workflow here:
-
-🔗 https://secure-auth-theta.vercel.app
+This system is designed for environments where security is paramount and self-registration is prohibited.
 
 ---
 
-## 🛠 Tech Stack
+## 🛠 Tech Stack & Security
 
-### Frontend
-- React 19
-- Vite 6
-- Tailwind CSS
-- Lucide React
-- qrcode.react
+### Core Technologies
+- **Frontend**: React 19, Vite 6, Tailwind CSS
+- **Icons**: Lucide React
+- **MFA Engine**: `qrcode.react` for TOTP onboarding
 
-### Security (Demo Simulation)
-- crypto-js (SHA-256 hashing for demonstration)
-
-### Storage (Demo Only)
-- localStorage — user registry & MFA state
-- sessionStorage — active session tracking
+### Security Architecture (Demo)
+- **Zero Plain-Text Storage**: Passwords are never stored in plain text. Every credential is transformed into a **SHA-256 hash** immediately upon entry and stored only in hashed format within the simulated database.
+- **Device Fingerprinting**: During the QR setup phase, the system captures a unique **Device Signature** (a composite hash of the User Agent and Screen Resolution). This signature is bound to the user profile to identify the trusted onboarding environment.
+- **Complexity Enforcement**: The mandatory password reset stage requires a mix of capital letters, numbers, and special characters to mitigate brute-force risks.
 
 ---
 
-## 🔐 Authentication Workflow
+## 📊 Authentication Workflow
 
-1. Admin provisions a user with a temporary password  
-2. User logs in using temporary credentials  
-3. Mandatory password reset with complexity rules  
-4. QR-based TOTP secret generation  
-5. Device fingerprint captured (UA + Screen Resolution hash)  
-6. OTP verification handshake  
-7. Standard login requires password + OTP  
-
----
-
-## 📊 Workflow Diagram
+The workflow is strictly sequenced to ensure maximum security during the onboarding process. After the initial MFA activation, the user is forced to re-authenticate with their new credentials to establish a clean session.
 
 ```mermaid
 flowchart TD
-    Start["Admin creates user"] --> Login["Login Page"]
-    Login --> Auth{"Credentials valid?"}
-    Auth -- No --> Login
-    Auth -- Yes --> FirstTime{"First Login?"}
+    Start["Admin provisions User ID & Temp Key"] --> LoginTemp["Login with Temporary Credentials"]
+    
+    subgraph "Mandatory Onboarding"
+    LoginTemp --> PwdReset["Password Reset Page<br/>(Enforce Complexity Rules)"]
+    PwdReset --> QRSetup["QR Setup & Device ID Binding<br/>(Capture Mobile Fingerprint)"]
+    QRSetup --> VerifyOnboard["OTP Handshake Verification"]
+    end
 
-    FirstTime -- Yes --> Reset["Password Reset Page"]
-    Reset --> QR["QR Setup & Device Fingerprint"]
+    VerifyOnboard -- "Success" --> LoginNew["Redirect to Login Page<br/>(Re-Auth with New Password)"]
 
-    FirstTime -- No --> MFA{"MFA Enabled?"}
-    MFA -- No --> QR
-
-    QR --> Verify["Verify 6-digit OTP"]
-    Verify --> Home["Protected Dashboard"]
-
-    MFA -- Yes --> OTP["OTP Challenge"]
-    OTP --> Home
+    subgraph "Standard Secure Access"
+    LoginNew --> AuthCheck{"Credentials Match?"}
+    AuthCheck -- "Yes" --> OTPChallenge["OTP Challenge Page<br/>(6-Digit MFA)"]
+    OTPChallenge -- "Valid" --> Home["Protected Secure Dashboard"]
+    end
+    
+    AuthCheck -- "No" --> LoginNew
+    OTPChallenge -- "Invalid" --> OTPChallenge
 ```
 
 ---
 
 ## 📍 Application Routes
 
-| Route | Description |
-|------|------------|
-| `/` | Public landing page |
-| `/login` | User & Admin login |
-| `/reset-password` | Mandatory password reset |
-| `/setup-qr` | QR + TOTP setup |
-| `/otp` | OTP challenge |
-| `/home` | Protected dashboard |
-| `/admin` | Admin registry |
+| Route | Protocol Stage | Description |
+|------|----------------|-------------|
+| `/` | Public | Landing page with Admin and User entry points. |
+| `/login` | Authentication | Dual-role login gate for identity verification. |
+| `/reset-password` | Compliance | Mandatory first-time password rotation. |
+| `/setup-qr` | Onboarding | TOTP secret generation and Device Signature binding. |
+| `/otp` | Verification | Secondary challenge for authenticated users. |
+| `/home` | Protected | Secure dashboard featuring system health logs. |
+| `/admin` | Registry | Admin portal for provisioning and device auditing. |
 
 ---
 
-## 📁 Data Model (Simulation)
+## 📁 Data Structure (Secure Simulation)
 
-### Admin
+### User Registry (Custom DB)
+Passwords are stored as fixed-length hashes to ensure data privacy even in the event of a registry breach.
 ```ts
 {
   username: string;
-  password_hash: string;
-}
-```
-
-### User
-```ts
-{
-  username: string;
-  password_hash: string;
-  totp_secret: string;
+  password_hash: string;       // SHA-256 (No plain text stored)
+  totp_secret: string;         // Base32 Secret
   totp_enabled: 'Y' | 'N';
-  registered_device_id: string;
+  registered_device_id: string; // 12-bit Environment Hash
   password_reset_required: boolean;
+  createdAt: string;
 }
 ```
 
@@ -119,29 +94,20 @@ flowchart TD
 
 ## 🚀 Deployment
 
-Deployed using **Vercel** with automatic GitHub integration.
+The project is optimized for static hosting and deployed via **Vercel**.
 
 ```bash
+# Build Instructions
 npm install
 npm run build
 ```
 
-Output directory: `dist/`
-
-Live URL: https://secure-auth-theta.vercel.app
-
----
-
-## ⚠️ Security Disclaimer
-
-This project is a **frontend-only demonstration**.
-
-All cryptographic operations, secrets, and device fingerprints **must be handled server-side** in production systems.
+The production-ready assets are located in the `dist/` directory.
 
 ---
 
 ## 👨‍💻 Author
 
 **Nayan**  
-Secure Authentication Workflow Demo  
-Core Security Engine v2.4
+*Secure Authentication*  
+**Core Security Engine v2.4**
