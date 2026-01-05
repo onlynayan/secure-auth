@@ -1,0 +1,5 @@
+{
+  "name": "SecureAuth",
+  "description": "A comprehensive React implementation of a custom 2FA (TOTP) authentication workflow with Admin user management and QR code setup.",
+  "requestFramePermissions": []
+}
