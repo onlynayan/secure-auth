@@ -74,6 +74,25 @@ flowchart TD
 
 ---
 
+## 🔑 Admin Access (Credentials)
+
+To access the **Admin Panel** and provision users, use the following demo credentials:
+
+```text
+Username: admin
+Password: admin
+```
+
+After logging in as **admin**, you can:
+
+* Access the **Admin Registry (`/admin`)**
+* Create new user records
+* Trigger the full **MFA onboarding workflow** for users (password reset → QR setup → OTP verification)
+
+> ⚠️ These credentials are **demo-only** and intended for simulation purposes.
+
+---
+
 ## 📁 Data Structure (Secure Simulation)
 
 ### User Registry (Custom DB)
