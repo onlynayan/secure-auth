@@ -26,9 +26,9 @@ const OTPVerifyPage: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-6 h-full bg-slate-950 overflow-hidden">
-      <div className="max-w-md w-full h-full max-h-[500px] flex flex-col justify-center">
-        <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl p-10 shrink-0">
+    <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 md:py-20 bg-slate-950">
+      <div className="max-w-md w-full flex flex-col">
+        <div className="bg-slate-900 border border-slate-800 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl p-6 md:p-10">
           <div className="flex flex-col items-center mb-10 text-center">
             <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-4 border border-blue-500/20">
               <Fingerprint className="w-8 h-8 text-blue-500" />
@@ -48,23 +48,23 @@ const OTPVerifyPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="flex flex-col items-center gap-3">
               <label className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.3em]">Vault Access Code</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 maxLength={6}
                 autoFocus
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                className="w-full text-center text-4xl tracking-[0.3em] font-mono font-black py-5 rounded-2xl bg-slate-950 border border-slate-800 focus:border-blue-500/40 focus:outline-none text-blue-400 placeholder:text-slate-900 transition-all"
+                className="w-full text-center text-2xl md:text-4xl tracking-[0.3em] font-mono font-black py-5 rounded-2xl bg-slate-950 border border-slate-800 focus:border-blue-500/40 focus:outline-none text-blue-400 placeholder:text-slate-900 transition-all"
                 placeholder="000000"
               />
             </div>
-            <button 
+            <button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg text-xs uppercase tracking-widest"
             >
               Verify Identity
             </button>
-            <button 
+            <button
               type="button"
               onClick={() => navigate('/login')}
               className="w-full text-slate-600 text-[10px] font-black uppercase tracking-widest transition-colors hover:text-slate-400"

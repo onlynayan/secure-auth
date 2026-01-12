@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserPlus, Users, AlertCircle, CheckCircle, Database, Key, EyeOff, Smartphone } from 'lucide-react';
+import { UserPlus, Users, AlertCircle, CheckCircle, Database, Key, Smartphone } from 'lucide-react';
 import { dbService } from '../services/dbService';
 import { AdminUserRecord, User } from '../types';
 
@@ -19,7 +19,6 @@ const AdminManagePage: React.FC = () => {
 
   const refreshData = () => {
     setAdminUsers(dbService.getAdminUsers());
-    // Extract linked users from custom DB
     const data = localStorage.getItem('secure_auth_custom_db');
     setCustomUsers(data ? JSON.parse(data) : []);
   };
@@ -50,37 +49,37 @@ const AdminManagePage: React.FC = () => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col p-6 max-w-7xl mx-auto overflow-hidden">
-      <div className="flex items-end justify-between mb-8 shrink-0">
+    <div className="w-full flex flex-col p-4 md:p-6 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 text-indigo-400 font-black text-[10px] uppercase tracking-[0.3em] mb-1">
             <Database className="w-3 h-3" /> Secure Vault Registry
           </div>
-          <h1 className="text-3xl font-black text-slate-100 tracking-tight">Identity & Device Management</h1>
+          <h1 className="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">Identity & Device Management</h1>
         </div>
-        <button 
+        <button
           onClick={clearDB}
-          className="text-[9px] font-black text-red-500/70 hover:text-red-400 uppercase tracking-[0.2em] px-4 py-2 border border-red-500/20 rounded-xl transition-all"
+          className="w-fit text-[9px] font-black text-red-500/70 hover:text-red-400 uppercase tracking-[0.2em] px-4 py-2 border border-red-500/20 rounded-xl transition-all"
         >
           Factory Reset
         </button>
       </div>
 
-      <div className="flex-1 grid lg:grid-cols-5 gap-6 min-h-0 overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Provisioning Section */}
-        <div className="lg:col-span-2 bg-slate-900 rounded-3xl border border-slate-800 p-8 shadow-xl flex flex-col">
-          <div className="flex items-center gap-3 mb-8 shrink-0">
+        <div className="lg:col-span-2 bg-slate-900 rounded-3xl border border-slate-800 p-6 md:p-8 shadow-xl flex flex-col">
+          <div className="flex items-center gap-3 mb-8">
             <div className="bg-indigo-500/10 p-2 rounded-lg">
               <UserPlus className="w-4 h-4 text-indigo-400" />
             </div>
             <h2 className="font-bold text-lg text-slate-100 uppercase tracking-tighter">User Provision</h2>
           </div>
 
-          <form onSubmit={handleCreateUser} className="space-y-6 flex-1 flex flex-col justify-center">
+          <form onSubmit={handleCreateUser} className="space-y-6">
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Account ID</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={newUsername}
                 onChange={(e) => setNewUsername(e.target.value)}
                 className="w-full bg-slate-950 px-4 py-3 rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 text-slate-100 transition-all text-sm"
@@ -89,8 +88,8 @@ const AdminManagePage: React.FC = () => {
             </div>
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Password</label>
-              <input 
-                type="password" 
+              <input
+                type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full bg-slate-950 px-4 py-3 rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 text-slate-100 transition-all text-sm"
@@ -105,7 +104,7 @@ const AdminManagePage: React.FC = () => {
               </div>
             )}
 
-            <button 
+            <button
               type="submit"
               className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg text-xs"
             >
@@ -115,20 +114,20 @@ const AdminManagePage: React.FC = () => {
         </div>
 
         {/* Identity Registry Section */}
-        <div className="lg:col-span-3 bg-slate-900 rounded-3xl border border-slate-800 p-8 shadow-xl flex flex-col overflow-hidden">
-          <div className="flex items-center justify-between mb-6 shrink-0">
+        <div className="lg:col-span-3 bg-slate-900 rounded-3xl border border-slate-800 p-6 md:p-8 shadow-xl flex flex-col overflow-x-auto">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="bg-slate-800 p-2 rounded-lg">
-                <Users className="w-4 h-4 text-slate-400" />
+                <icon Users className="w-4 h-4 text-slate-400" />
               </div>
               <h2 className="font-bold text-lg text-slate-100 uppercase tracking-tighter">Vault Identities</h2>
             </div>
             <div className="text-[9px] font-bold text-slate-500 uppercase">Total: {adminUsers.length}</div>
           </div>
 
-          <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+          <div className="min-w-[400px]">
             <table className="w-full text-left">
-              <thead className="sticky top-0 bg-slate-900 z-10">
+              <thead>
                 <tr className="border-b border-slate-800">
                   <th className="pb-3 font-bold text-slate-500 text-[9px] uppercase tracking-widest">User ID</th>
                   <th className="pb-3 font-bold text-slate-500 text-[9px] uppercase tracking-widest">MFA State</th>
@@ -172,9 +171,9 @@ const AdminManagePage: React.FC = () => {
           </div>
         </div>
       </div>
-      
-      <div className="mt-6 bg-slate-900/40 border border-slate-800 p-4 rounded-2xl flex items-center gap-4 shrink-0">
-        <div className="bg-amber-500/10 p-2 rounded-xl">
+
+      <div className="mt-6 bg-slate-900/40 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+        <div className="bg-amber-500/10 p-2 rounded-xl shrink-0">
           <Key className="w-5 h-5 text-amber-500" />
         </div>
         <div className="flex-1">

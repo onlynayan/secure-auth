@@ -44,18 +44,16 @@ const PasswordResetPage: React.FC = () => {
       return;
     }
 
-    // Commit change
     const newHash = dbService.hashPassword(form.new);
     const user = dbService.getCustomUser(username);
     if (user) {
-      // Update both stores to maintain consistency
-      dbService.saveCustomUser({ 
-        ...user, 
-        password_hash: newHash, 
-        password_reset_required: false 
+      dbService.saveCustomUser({
+        ...user,
+        password_hash: newHash,
+        password_reset_required: false
       });
       dbService.updateAdminPassword(username, newHash);
-      
+
       setSuccess(true);
       setTimeout(() => {
         navigate('/setup-qr', { state: { username, passwordHash: newHash } });
@@ -78,9 +76,9 @@ const PasswordResetPage: React.FC = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-6 h-full overflow-hidden bg-slate-950">
-      <div className="max-w-md w-full flex flex-col h-full max-h-[650px] justify-center">
-        <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl p-10 relative overflow-hidden shrink-0">
+    <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 md:py-20 bg-slate-950">
+      <div className="max-w-md w-full flex flex-col">
+        <div className="bg-slate-900 border border-slate-800 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl p-6 md:p-10 relative overflow-hidden">
           <div className="flex flex-col items-center mb-8 text-center">
             <div className="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center mb-4 border border-amber-500/20">
               <ShieldAlert className="w-7 h-7 text-amber-500" />
@@ -101,8 +99,8 @@ const PasswordResetPage: React.FC = () => {
             <div className="space-y-1">
               <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest ml-1">Current Password</label>
               <div className="relative">
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   value={form.old}
                   onChange={(e) => setForm({ ...form, old: e.target.value })}
                   className="w-full bg-slate-950 px-4 py-3 pl-10 rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/40 text-slate-100 text-sm"
@@ -116,8 +114,8 @@ const PasswordResetPage: React.FC = () => {
             <div className="space-y-1">
               <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest ml-1">New Password</label>
               <div className="relative">
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   value={form.new}
                   onChange={(e) => setForm({ ...form, new: e.target.value })}
                   className="w-full bg-slate-950 px-4 py-3 pl-10 rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/40 text-slate-100 text-sm"
@@ -130,8 +128,8 @@ const PasswordResetPage: React.FC = () => {
 
             <div className="space-y-1">
               <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest ml-1">Confirm New Password</label>
-              <input 
-                type="password" 
+              <input
+                type="password"
                 value={form.confirm}
                 onChange={(e) => setForm({ ...form, confirm: e.target.value })}
                 className="w-full bg-slate-950 px-4 py-3 rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/40 text-slate-100 text-sm"
@@ -141,7 +139,7 @@ const PasswordResetPage: React.FC = () => {
             </div>
 
             <div className="pt-2">
-              <button 
+              <button
                 type="submit"
                 className="w-full bg-amber-600 hover:bg-amber-500 text-white font-black py-4 rounded-2xl transition-all shadow-xl active:scale-95 text-xs uppercase tracking-widest"
               >
@@ -153,6 +151,7 @@ const PasswordResetPage: React.FC = () => {
           <div className="mt-6 p-4 bg-slate-950/50 rounded-2xl border border-slate-800">
             <h4 className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Requirements:</h4>
             <ul className="text-[8px] text-slate-600 space-y-1 font-bold uppercase tracking-wider">
+              <li className={/[A-Z]/.test(form.new) ? 'text-emerald-500' : ''}>• Minimum 8 characters</li>
               <li className={/[A-Z]/.test(form.new) ? 'text-emerald-500' : ''}>• At least one Capital letter</li>
               <li className={/\d/.test(form.new) ? 'text-emerald-500' : ''}>• At least one numeric digit</li>
               <li className={/[@$!%*?&]/.test(form.new) ? 'text-emerald-500' : ''}>• At least one special character</li>

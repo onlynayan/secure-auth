@@ -8,7 +8,7 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const role = (location.state as any)?.role || 'user';
-  
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,8 +19,7 @@ const LoginPage: React.FC = () => {
 
     const inputHash = dbService.hashPassword(password);
     const adminUsers = dbService.getAdminUsers();
-    
-    // Validate against hashed master list
+
     const adminRecord = adminUsers.find(u => u.username === username && u.password_hash === inputHash);
 
     if (!adminRecord) {
@@ -38,11 +37,9 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    // User Flow: Check if user exists in custom DB
     let existingUser = dbService.getCustomUser(username);
 
     if (!existingUser) {
-      // First time logging in: Provision them in custom DB with reset flag
       existingUser = {
         username,
         password_hash: inputHash,
@@ -53,38 +50,34 @@ const LoginPage: React.FC = () => {
       dbService.saveCustomUser(existingUser);
     }
 
-    // Stage 1: Check for mandatory password reset
     if (existingUser.password_reset_required) {
       navigate('/reset-password', { state: { username, oldPassword: password } });
       return;
     }
 
-    // Stage 2: QR Setup if not enabled
     if (existingUser.totp_enabled === 'N') {
       navigate('/setup-qr', { state: { username, passwordHash: existingUser.password_hash } });
       return;
     }
 
-    // Stage 3: Normal MFA Challenge
     sessionStorage.setItem('pending_auth_user', username);
     navigate('/otp');
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-6 py-4 bg-slate-950 h-full overflow-hidden">
-      <div className="max-w-md w-full flex flex-col h-full max-h-[600px] justify-center">
-        <button 
+    <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 md:py-20 bg-slate-950">
+      <div className="max-w-md w-full flex flex-col">
+        <button
           onClick={() => navigate('/')}
-          className="flex items-center gap-2 text-slate-500 hover:text-white mb-6 transition-colors text-xs font-black uppercase tracking-widest shrink-0"
+          className="flex items-center gap-2 text-slate-500 hover:text-white mb-6 transition-colors text-xs font-black uppercase tracking-widest self-start"
         >
           <ArrowLeft className="w-4 h-4" /> Exit to Public
         </button>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl p-8 md:p-10 relative overflow-hidden shrink-0">
+        <div className="bg-slate-900 border border-slate-800 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl p-6 md:p-10 relative overflow-hidden">
           <div className="flex flex-col items-center mb-8 text-center">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border ${
-              role === 'admin' ? 'bg-amber-500/10 border-amber-500/20' : 'bg-indigo-500/10 border-indigo-500/20'
-            }`}>
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border ${role === 'admin' ? 'bg-amber-500/10 border-amber-500/20' : 'bg-indigo-500/10 border-indigo-500/20'
+              }`}>
               <Shield className={`w-7 h-7 ${role === 'admin' ? 'text-amber-500' : 'text-indigo-500'}`} />
             </div>
             <h1 className="text-2xl font-black text-white tracking-tighter uppercase">
@@ -105,8 +98,8 @@ const LoginPage: React.FC = () => {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1">
               <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Username</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full bg-slate-950 px-4 py-3 rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 text-slate-100 transition-all text-sm"
@@ -116,8 +109,8 @@ const LoginPage: React.FC = () => {
             </div>
             <div className="space-y-1">
               <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Password</label>
-              <input 
-                type="password" 
+              <input
+                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-slate-950 px-4 py-3 rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 text-slate-100 transition-all text-sm"
@@ -125,11 +118,10 @@ const LoginPage: React.FC = () => {
                 required
               />
             </div>
-            <button 
+            <button
               type="submit"
-              className={`w-full text-white font-black py-4 rounded-2xl transition-all shadow-xl active:scale-95 mt-2 ${
-                role === 'admin' ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-900/20' : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-900/20'
-              }`}
+              className={`w-full text-white font-black py-4 rounded-2xl transition-all shadow-xl active:scale-95 mt-2 ${role === 'admin' ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-900/20' : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-900/20'
+                }`}
             >
               AUTHENTICATE
             </button>

@@ -18,7 +18,7 @@ const QRSetupPage: React.FC = () => {
 
   useEffect(() => {
     if (!username) { navigate('/login'); return; }
-    
+
     const user = dbService.getCustomUser(username);
     setDeviceSig(dbService.getDeviceFingerprint());
 
@@ -38,11 +38,10 @@ const QRSetupPage: React.FC = () => {
     if (otpCode.length === 6) {
       const user = dbService.getCustomUser(username);
       if (user) {
-        // Save TOTP enabled AND the captured device fingerprint
-        dbService.saveCustomUser({ 
-          ...user, 
+        dbService.saveCustomUser({
+          ...user,
           totp_enabled: 'Y',
-          registered_device_id: deviceSig 
+          registered_device_id: deviceSig
         });
         setSuccess(true);
         setTimeout(() => navigate('/login'), 2000);
@@ -56,7 +55,7 @@ const QRSetupPage: React.FC = () => {
 
   if (success) {
     return (
-      <div className="flex-1 flex items-center justify-center p-6 h-full bg-slate-950">
+      <div className="flex-1 flex items-center justify-center p-6 min-h-[calc(100vh-64px)] bg-slate-950">
         <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-10 text-center shadow-2xl">
           <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
             <CheckCircle2 className="w-10 h-10 text-emerald-500" />
@@ -69,18 +68,18 @@ const QRSetupPage: React.FC = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-6 h-full overflow-hidden bg-slate-950">
-      <div className="max-w-4xl w-full flex flex-col h-full max-h-[700px]">
-        <button 
+    <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 md:py-20 bg-slate-950">
+      <div className="max-w-4xl w-full flex flex-col">
+        <button
           onClick={() => navigate('/login')}
-          className="flex items-center gap-2 text-slate-500 hover:text-white mb-6 transition-colors text-[10px] font-black uppercase tracking-widest shrink-0"
+          className="flex items-center gap-2 text-slate-500 hover:text-white mb-6 transition-colors text-[10px] font-black uppercase tracking-widest self-start"
         >
           <ArrowLeft className="w-3 h-3" /> Abort Setup
         </button>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row flex-1 min-h-0">
+        <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row">
           <div className="lg:w-1/2 bg-slate-950 p-8 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-slate-800">
-            <div className="bg-white p-4 rounded-[1.5rem] shadow-2xl shadow-indigo-500/10 mb-6 shrink-0 transform hover:scale-105 transition-transform duration-500">
+            <div className="bg-white p-4 rounded-[1.5rem] shadow-2xl shadow-indigo-500/10 mb-6 transform hover:scale-105 transition-transform duration-500">
               {secret && <QRCodeSVG value={otpAuthUrl} size={180} level="M" />}
             </div>
             <div className="w-full max-w-[220px] space-y-3">
@@ -97,12 +96,12 @@ const QRSetupPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="lg:w-1/2 p-10 flex flex-col justify-center">
-            <div className="flex items-center gap-3 mb-6 shrink-0">
+          <div className="lg:w-1/2 p-6 md:p-10 flex flex-col justify-center">
+            <div className="flex items-center gap-3 mb-6">
               <ShieldCheck className="w-6 h-6 text-indigo-500" />
               <h2 className="font-bold text-xl text-white uppercase tracking-tighter">Secure Onboarding</h2>
             </div>
-            
+
             <div className="space-y-4 mb-8 text-[11px] text-slate-400 font-medium uppercase tracking-wide">
               <p className="flex gap-2">1. Use any TOTP Authenticator to scan.</p>
               <p className="flex gap-2">2. This device environment will be registered.</p>
@@ -111,12 +110,12 @@ const QRSetupPage: React.FC = () => {
             <form onSubmit={handleVerify} className="space-y-5">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Confirmation Code</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   maxLength={6}
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                  className="w-full text-center text-4xl tracking-[0.4em] font-mono font-black px-4 py-4 rounded-2xl bg-slate-950 border border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 text-indigo-400"
+                  className="w-full text-center text-2xl md:text-4xl tracking-[0.4em] font-mono font-black px-4 py-4 rounded-2xl bg-slate-950 border border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 text-indigo-400"
                   placeholder="000000"
                   required
                 />
@@ -128,7 +127,7 @@ const QRSetupPage: React.FC = () => {
                 </div>
               )}
 
-              <button 
+              <button
                 type="submit"
                 className="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl hover:bg-indigo-500 transition-all shadow-xl text-xs uppercase tracking-widest"
               >
